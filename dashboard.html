@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PitchDeckPro | Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2563eb',
+                        secondary: '#0ea5e9',
+                        lightblue: '#f0f9ff',
+                        dark: '#1e293b',
+                        sidebar: '#f8fafc',
+                        frame: '#f1f5f9'
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-in forwards',
+                        'slide-in': 'slideIn 0.3s ease-out forwards'
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: 0 },
+                            '100%': { opacity: 1 }
+                        },
+                        slideIn: {
+                            '0%': { transform: 'translateX(-20px)' },
+                            '100%': { transform: 'translateX(0)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer base {
+            body {
+                @apply bg-gray-50 text-gray-800 font-sans;
+            }
+            .sidebar-item {
+                @apply flex items-center px-6 py-3 text-gray-600 hover:bg-blue-50 hover:text-blue-600 cursor-pointer transition-all duration-300;
+            }
+            .sidebar-item.active {
+                @apply bg-blue-100 text-blue-600 border-r-4 border-blue-600;
+            }
+            .profile-dropdown {
+                @apply absolute right-0 top-14 bg-white rounded-lg shadow-lg py-2 w-64 z-50 hidden;
+            }
+        }
+        @layer utilities {
+            .iframe-container {
+                height: calc(100vh - 80px);
+            }
+            .cookie-notice {
+                animation: slideDown 0.5s ease-out;
+            }
+        }
+        @keyframes slideDown {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden">
+    <!-- Cookie Consent Banner -->
+    <div id="cookieConsent" class="hidden fixed top-0 left-0 right-0 bg-yellow-50 border-b border-yellow-200 p-4 z-50 cookie-notice">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between">
+            <div class="flex items-center">
+                <i class="fas fa-cookie-bite text-yellow-500 text-xl mr-3"></i>
+                <p class="text-yellow-800">
+                    <span class="font-medium">Cookies are disabled!</span> Some features may not work properly. 
+                    <a href="https://www.whatismybrowser.com/guides/how-to-enable-cookies/" target="_blank" class="text-blue-600 hover:text-blue-800 underline">Learn how to enable cookies</a>
+                </p>
+            </div>
+            <button id="dismissCookieNotice" class="mt-3 md:mt-0 bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-md transition">
+                Dismiss
+            </button>
+        </div>
+    </div>
+
+    <!-- Sidebar Navigation -->
+    <div class="w-1/5 bg-sidebar border-r border-gray-200 flex flex-col h-screen">
+        <!-- Logo Section -->
+        <div class="p-6 border-b border-gray-200">
+            <div class="flex items-center">
+                <div class="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-chart-line text-white text-xl"></i>
+                </div>
+                <span class="ml-3 font-bold text-xl text-blue-600">PitchDeck<span class="text-blue-400">Pro</span></span>
+            </div>
+        </div>
+        
+        <!-- Navigation Items -->
+        <div class="py-6 flex-grow">
+            <div class="sidebar-item active">
+                <i class="fas fa-home mr-4 text-lg"></i>
+                <span class="font-medium">Dashboard</span>
+            </div>
+            <div class="sidebar-item">
+                <i class="fas fa-comment-alt mr-4 text-lg"></i>
+                <span class="font-medium">Messages</span>
+                <span class="ml-auto bg-blue-500 text-white text-xs px-2 py-1 rounded-full">3</span>
+            </div>
+            <div class="sidebar-item">
+                <i class="fas fa-newspaper mr-4 text-lg"></i>
+                <span class="font-medium">News Feed</span>
+            </div>
+            <div class="sidebar-item">
+                <i class="fas fa-briefcase mr-4 text-lg"></i>
+                <span class="font-medium">Job Board</span>
+            </div>
+            <div class="sidebar-item">
+                <i class="fas fa-robot mr-4 text-lg"></i>
+                <span class="font-medium">AI Assistant</span>
+                <span class="ml-auto bg-green-500 text-white text-xs px-2 py-1 rounded-full">New</span>
+            </div>
+            <div class="sidebar-item">
+                <i class="fas fa-book mr-4 text-lg"></i>
+                <span class="font-medium">Resources</span>
+            </div>
+        </div>
+        
+        <!-- Bottom Section -->
+        <div class="p-6 border-t border-gray-200">
+            <div class="bg-blue-50 rounded-lg p-4 text-center">
+                <p class="text-sm text-blue-700 mb-2">Need help with your pitch?</p>
+                <button class="bg-blue-600 hover:bg-blue-700 text-white text-sm px-4 py-2 rounded-lg transition">
+                    <i class="fas fa-robot mr-2"></i> AI Pitch Review
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main Content Area -->
+    <div class="w-4/5 flex flex-col">
+        <!-- Top Bar -->
+        <div class="bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
+            <div>
+                <h1 class="text-xl font-bold text-gray-800">Dashboard</h1>
+                <p class="text-sm text-gray-600">Welcome back! Here's what's happening today.</p>
+            </div>
+            
+            <!-- Profile Section -->
+            <div class="relative">
+                <div id="profileBtn" class="flex items-center cursor-pointer">
+                    <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-user text-blue-600"></i>
+                    </div>
+                    <div class="ml-3 text-left">
+                        <p class="text-sm font-medium" id="userName">Loading...</p>
+                        <p class="text-xs text-gray-500" id="userRole">Loading...</p>
+                    </div>
+                    <i class="fas fa-chevron-down ml-2 text-gray-500 text-sm"></i>
+                </div>
+                
+                <!-- Profile Dropdown -->
+                <div id="profileDropdown" class="profile-dropdown">
+                    <div class="px-4 py-3 border-b border-gray-100">
+                        <p class="text-sm font-medium text-gray-900" id="dropdownName">Loading...</p>
+                        <p class="text-xs text-gray-500 truncate" id="dropdownEmail">Loading...</p>
+                    </div>
+                    <div class="py-1">
+                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                            <i class="fas fa-user mr-3 text-gray-500"></i> Profile
+                        </a>
+                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                            <i class="fas fa-cog mr-3 text-gray-500"></i> Settings
+                        </a>
+                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                            <i class="fas fa-bell mr-3 text-gray-500"></i> Notifications
+                        </a>
+                    </div>
+                    <div class="py-1 border-t border-gray-100">
+                        <a href="#" id="signOutBtn" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                            <i class="fas fa-sign-out-alt mr-3 text-gray-500"></i> Sign out
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Iframe Content Area -->
+        <div class="iframe-container flex-grow p-4 bg-frame">
+            <!-- Cookie disabled warning -->
+            <div id="cookieWarning" class="hidden bg-red-50 border border-red-200 rounded-lg p-6 mb-4">
+                <div class="flex items-start">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-exclamation-circle text-red-500 text-2xl"></i>
+                    </div>
+                    <div class="ml-3">
+                        <h3 class="text-lg font-medium text-red-800">Cookies Disabled</h3>
+                        <div class="mt-2 text-sm text-red-700">
+                            <p>It appears your browser is not accepting cookies. Please enable cookies to continue to this page, or disable 'private' web browsing mode.</p>
+                            <p class="mt-2">Instructions to enable cookies for all browsers can be found <a href="https://www.whatismybrowser.com/guides/how-to-enable-cookies/" target="_blank" class="font-medium text-red-900 underline">HERE</a></p>
+                        </div>
+                        <div class="mt-4">
+                            <button id="retryButton" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none">
+                                <i class="fas fa-sync-alt mr-2"></i> Retry Loading Content
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-xl shadow-sm h-full overflow-hidden">
+                <div class="border-b border-gray-200 px-6 py-4 flex items-center justify-between">
+                    <h2 class="text-lg font-semibold text-gray-800">Dashboard Overview</h2>
+                    <div class="flex space-x-2">
+                        <button class="text-gray-500 hover:text-gray-700">
+                            <i class="fas fa-expand"></i>
+                        </button>
+                        <button id="refreshFrame" class="text-gray-500 hover:text-gray-700">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                    </div>
+                </div>
+                <iframe id="contentFrame" src="https://example.com" class="w-full h-full" frameborder="0" sandbox="allow-same-origin allow-scripts allow-forms"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBmvS148YEpJaqdArwg83zyz7qkkgjSEzA",
+            authDomain: "web3hack-7cc7e.firebaseapp.com",
+            projectId: "web3hack-7cc7e",
+            storageBucket: "web3hack-7cc7e.firebasestorage.app",
+            messagingSenderId: "30048481947",
+            appId: "1:30048481947:web:2ae2cde286b66a97e38c3e",
+            measurementId: "G-W5ERQ9GR3B"
+        };
+        
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        
+        // DOM Elements
+        const profileBtn = document.getElementById('profileBtn');
+        const profileDropdown = document.getElementById('profileDropdown');
+        const signOutBtn = document.getElementById('signOutBtn');
+        const userName = document.getElementById('userName');
+        const userRole = document.getElementById('userRole');
+        const dropdownName = document.getElementById('dropdownName');
+        const dropdownEmail = document.getElementById('dropdownEmail');
+        const sidebarItems = document.querySelectorAll('.sidebar-item');
+        const contentFrame = document.getElementById('contentFrame');
+        const refreshFrame = document.getElementById('refreshFrame');
+        const cookieConsent = document.getElementById('cookieConsent');
+        const dismissCookieNotice = document.getElementById('dismissCookieNotice');
+        const cookieWarning = document.getElementById('cookieWarning');
+        const retryButton = document.getElementById('retryButton');
+        
+        // Mock URLs for navigation items
+        const navLinks = {
+            'Dashboard': 'https://example.com/dashboard',
+            'Messages': 'https://example.com/messages',
+            'News Feed': 'https://example.com/news',
+            'Job Board': 'https://example.com/jobs',
+            'AI Assistant': 'https://example.com/ai',
+            'Resources': 'https://web3hack.kesug.com'
+        };
+        
+        // Check if cookies are enabled
+        function areCookiesEnabled() {
+            try {
+                // Create cookie
+                document.cookie = "cookietest=1; SameSite=Lax;";
+                const cookiesEnabled = document.cookie.indexOf("cookietest=") !== -1;
+                // Delete cookie
+                document.cookie = "cookietest=1; SameSite=Lax; expires=Thu, 01-Jan-1970 00:00:01 GMT";
+                return cookiesEnabled;
+            } catch (e) {
+                return false;
+            }
+        }
+        
+        // Show cookie notice if disabled
+        if (!areCookiesEnabled()) {
+            cookieConsent.classList.remove('hidden');
+        }
+        
+        // Toggle profile dropdown
+        profileBtn.addEventListener('click', () => {
+            profileDropdown.classList.toggle('hidden');
+        });
+        
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!profileBtn.contains(e.target) && !profileDropdown.contains(e.target)) {
+                profileDropdown.classList.add('hidden');
+            }
+        });
+        
+        // Sign out functionality
+        signOutBtn.addEventListener('click', () => {
+            auth.signOut().then(() => {
+                window.location.href = 'login.html'; // Redirect to login page
+            }).catch((error) => {
+                console.error('Sign out error:', error);
+            });
+        });
+        
+        // Navigation item click handlers
+        sidebarItems.forEach(item => {
+            item.addEventListener('click', function() {
+                // Remove active class from all items
+                sidebarItems.forEach(i => i.classList.remove('active'));
+                
+                // Add active class to clicked item
+                this.classList.add('active');
+                
+                // Get the text of the clicked item
+                const text = this.querySelector('span').textContent;
+                
+                // Update iframe source
+                if (navLinks[text]) {
+                    contentFrame.src = navLinks[text];
+                }
+            });
+        });
+        
+        // Refresh iframe content
+        refreshFrame.addEventListener('click', () => {
+            contentFrame.src = contentFrame.src;
+        });
+        
+        // Dismiss cookie notice
+        dismissCookieNotice.addEventListener('click', () => {
+            cookieConsent.classList.add('hidden');
+        });
+        
+        // Retry loading content
+        retryButton.addEventListener('click', () => {
+            if (areCookiesEnabled()) {
+                cookieWarning.classList.add('hidden');
+                contentFrame.src = contentFrame.src;
+            }
+        });
+        
+        // Handle iframe errors
+        contentFrame.addEventListener('error', (e) => {
+            console.error('Iframe error:', e);
+            cookieWarning.classList.remove('hidden');
+        });
+        
+        // Periodically check if cookies are enabled for iframe content
+        setInterval(() => {
+            if (!areCookiesEnabled() && !cookieWarning.classList.contains('hidden')) {
+                cookieWarning.classList.remove('hidden');
+            }
+        }, 5000);
+        
+        // Check auth state and load user data
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                // User is signed in
+                console.log('User signed in:', user.uid);
+                
+                // Fetch user data from Firestore
+                db.collection('users').doc(user.uid).get().then(doc => {
+                    if (doc.exists) {
+                        const userData = doc.data();
+                        console.log('User data:', userData);
+                        
+                        // Update profile information
+                        const fullName = `${userData.firstName} ${userData.lastName}`;
+                        userName.textContent = fullName;
+                        userRole.textContent = userData.role;
+                        dropdownName.textContent = fullName;
+                        dropdownEmail.textContent = user.email || userData.email;
+                        
+                        // Format and display creation date
+                        if (userData.createdAt) {
+                            const createdAt = userData.createdAt.toDate();
+                            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+                            document.getElementById('userSince').textContent = `Member since: ${createdAt.toLocaleDateString(undefined, options)}`;
+                        }
+                    } else {
+                        console.log('No user data found');
+                    }
+                }).catch(error => {
+                    console.error('Error getting user data:', error);
+                });
+            } else {
+                // User is signed out
+                console.log('User not signed in');
+                window.location.href = 'login.html'; // Redirect to login page
+            }
+        });
+        
+        // Initialize the dashboard with default content
+        contentFrame.src = navLinks['Dashboard'];
+    </script>
+</body>
+</html>
