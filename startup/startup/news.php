@@ -199,6 +199,8 @@ function timeAgo($datetime) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LinkedIn Startup News Feed</title>
+    <link rel="stylesheet" href="style.css">
+
     <style>
         * {
             margin: 0;
@@ -219,21 +221,7 @@ function timeAgo($datetime) {
             padding: 0 20px;
         }
 
-        .header {
-            background: linear-gradient(135deg, #0077B5 0%, #00A0DC 100%);
-            color: white;
-            padding: 30px 0;
-            margin-bottom: 30px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
-        .header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
+        
 
         .linkedin-icon {
             width: 40px;
@@ -248,11 +236,7 @@ function timeAgo($datetime) {
             font-size: 1.2rem;
         }
 
-        .header p {
-            font-size: 1.2rem;
-            opacity: 0.9;
-        }
-
+        
         .controls {
             background: white;
             padding: 25px;
@@ -531,15 +515,27 @@ function timeAgo($datetime) {
     </style>
 </head>
 <body>
-    <div class="header">
-        <div class="container">
-            <h1>
-                <div class="linkedin-icon">in</div>
-                LinkedIn Startup News Feed
-            </h1>
-            <p>Stay updated with the latest startup news, funding rounds, and industry insights</p>
+<header class="header">
+        <div class="logo">Pitchus<span>.ai</span></div>
+        
+        <nav class="nav-links">
+            <a href="index.php" style="text-decoration: none;"><div class="nav-item ">Home</div></a>
+            <a href="mes.php" style="text-decoration: none;"><div class="nav-item ">Message</div></a>
+            <a href="news.php" style="text-decoration: none;"><div class="nav-item active">News</div></a>
+            <a href="jobs.php" style="text-decoration: none;"><div class="nav-item ">Jobs</div></a>
+            <a href="ai.php" style="text-decoration: none;"><div class="nav-item ">AI</div></a>
+            <a href="doc.php" style="text-decoration: none;"><div class="nav-item ">Documents</div></a>
+        </nav>
+        
+        <div class="user-controls">
+            <div class="search-bar">
+                <div class="search-icon">🔍</div>
+                <input type="text" placeholder="Search startups...">
+            </div>
+            <div class="user-avatar">PD</div>
         </div>
-    </div>
+    </header>
+    <br><br><br><br><br>
 
     <div class="container">
         <div class="controls">

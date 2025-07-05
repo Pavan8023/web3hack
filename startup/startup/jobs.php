@@ -99,23 +99,7 @@ $locations = ['United States', 'Canada', 'United Kingdom', 'Australia', 'Germany
             padding: 20px;
         }
 
-        .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 30px 0;
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-        }
-
-        .header p {
-            font-size: 1.2rem;
-            opacity: 0.9;
-        }
+        
 
         .search-section {
             background: white;
@@ -362,14 +346,32 @@ $locations = ['United States', 'Canada', 'United Kingdom', 'Australia', 'Germany
             }
         }
     </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="header">
-        <div class="container">
-            <h1>Job Search Portal</h1>
-            <p>Find your dream job with powerful search and filtering</p>
+<header class="header">
+        <div class="logo">Pitchus<span>.ai</span></div>
+        
+        <nav class="nav-links">
+            <a href="index.php" style="text-decoration: none;"><div class="nav-item ">Home</div></a>
+            <a href="mes.php" style="text-decoration: none;"><div class="nav-item ">Message</div></a>
+            <a href="news.php" style="text-decoration: none;"><div class="nav-item ">News</div></a>
+            <a href="jobs.php" style="text-decoration: none;"><div class="nav-item active">Jobs</div></a>
+            <a href="ai.php" style="text-decoration: none;"><div class="nav-item ">AI</div></a>
+            <a href="doc.php" style="text-decoration: none;"><div class="nav-item ">Documents</div></a>
+        </nav>
+        
+        <div class="user-controls">
+            <div class="search-bar">
+                <div class="search-icon">🔍</div>
+                <input type="text" placeholder="Search startups...">
+            </div>
+            <div class="user-avatar">PD</div>
         </div>
-    </div>
+    </header>
+    <br>
+    <br>
+    <br><br><br>    
 
     <div class="container">
         <div class="search-section">
